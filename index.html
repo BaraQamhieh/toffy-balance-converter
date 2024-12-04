@@ -76,7 +76,7 @@
             const HOUR_TO_MINUTES = 60;
 
             function convert(weeks) {
-                const days = weeks * WEEK_TO_DAYS;
+                const days = Math.abs(weeks * WEEK_TO_DAYS);
                 const totalHours = days * DAY_TO_HOURS;
                 const daysFinal = Math.floor(totalHours / DAY_TO_HOURS);
                 const remainingHours = Math.floor(totalHours % DAY_TO_HOURS);
@@ -84,18 +84,18 @@
                 return { days: daysFinal, hours: remainingHours, minutes: remainingMinutes };
             }
 
-            function formatResult(result) {
-                let formattedResult = "";
-                if (result.days !== 0) {
-                    formattedResult += `${Math.abs(result.days)} days`;
+            function formatResult(result, isNegative) {
+                let formattedResult = isNegative ? "- " : "";
+                if (result.days > 0) {
+                    formattedResult += `${result.days} days`;
                 }
-                if (result.hours !== 0) {
-                    if (formattedResult) formattedResult += ", ";
-                    formattedResult += `${Math.abs(result.hours)} hours`;
+                if (result.hours > 0) {
+                    if (formattedResult && formattedResult !== "- ") formattedResult += ", ";
+                    formattedResult += `${result.hours} hours`;
                 }
-                if (result.minutes !== 0) {
-                    if (formattedResult) formattedResult += ", ";
-                    formattedResult += `${Math.abs(result.minutes)} minutes`;
+                if (result.minutes > 0) {
+                    if (formattedResult && formattedResult !== "- ") formattedResult += ", ";
+                    formattedResult += `${result.minutes} minutes`;
                 }
                 return formattedResult;
             }
@@ -110,9 +110,9 @@
 
             document.getElementById('result').innerHTML = `
                 <h2>Your balance summary</h2>
-                <p>Used time off: ${formatResult(usedTimeOff)}</p>
-                <p>Used Sick leaves: ${formatResult(usedSickLeaves)}</p>
-                <p>Available balance remaining: ${availableBalanceRemainingWeeks < 0 ? '-' : ''}${formatResult(availableBalanceRemaining)}</p>
+                <p>Used time off: ${formatResult(usedTimeOff, usedTimeOffWeeks < 0)}</p>
+                <p>Used Sick leaves: ${formatResult(usedSickLeaves, usedSickLeavesWeeks < 0)}</p>
+                <p>Available balance remaining: ${formatResult(availableBalanceRemaining, availableBalanceRemainingWeeks < 0)}</p>
             `;
         }
 
