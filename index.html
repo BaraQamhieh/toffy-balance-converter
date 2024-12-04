@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toffy Balance Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+        }
+        .header img {
+            margin-right: 10px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="logo.png" alt="Logo" width="50" height="50">
+            <h1>Toffy Balance Converter</h1>
+        </div>
+        <div class="input-group">
+            <label for="usedTimeOff">Used time off (weeks):</label>
+            <input type="text" id="usedTimeOff" placeholder="Enter weeks">
+        </div>
+        <div class="input-group">
+            <label for="usedSickLeaves">Used Sick leaves (weeks):</label>
+            <input type="text" id="usedSickLeaves" placeholder="Enter weeks">
+        </div>
+        <div class="input-group">
+            <label for="availableBalanceRemaining">Available balance remaining (weeks):</label>
+            <input type="text" id="availableBalanceRemaining" placeholder="Enter weeks">
+        </div>
+        <button onclick="convertWeeks()">Convert</button>
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        function convertWeeks() {
+            const WEEK_TO_DAYS = 5;
+            const DAY_TO_HOURS = 8;
+            const HOUR_TO_MINUTES = 60;
+
+            function convert(weeks) {
+                const days = weeks * WEEK_TO_DAYS;
+                const totalHours = days * DAY_TO_HOURS;
+                const daysFinal = Math.floor(totalHours / DAY_TO_HOURS);
+                const remainingHours = Math.floor(totalHours % DAY_TO_HOURS);
+                const remainingMinutes = Math.floor((totalHours - (daysFinal * DAY_TO_HOURS + remainingHours)) * HOUR_TO_MINUTES);
+                return { days: daysFinal, hours: remainingHours, minutes: remainingMinutes };
+            }
+
+            function formatResult(result) {
+                let formattedResult = "";
+                if (result.days > 0) {
+                    formattedResult += `${result.days} days`;
+                }
+                if (result.hours > 0) {
+                    if (formattedResult) formattedResult += ", ";
+                    formattedResult += `${result.hours} hours`;
+                }
+                if (result.minutes > 0) {
+                    if (formattedResult) formattedResult += ", ";
+                    formattedResult += `${result.minutes} minutes`;
+                }
+                return formattedResult;
+            }
+
+            const usedTimeOffWeeks = parseFloat(document.getElementById('usedTimeOff').value);
+            const usedSickLeavesWeeks = parseFloat(document.getElementById('usedSickLeaves').value);
+            const availableBalanceRemainingWeeks = parseFloat(document.getElementById('availableBalanceRemaining').value);
+
+            const usedTimeOff = convert(usedTimeOffWeeks);
+            const usedSickLeaves = convert(usedSickLeavesWeeks);
+            const availableBalanceRemaining = convert(availableBalanceRemainingWeeks);
+
+            document.getElementById('result').innerHTML = `
+                <h2>Your balance summary</h2>
+                <p>Used time off: ${formatResult(usedTimeOff)}</p>
+                <p>Used Sick leaves: ${formatResult(usedSickLeaves)}</p>
+                <p>Available balance remaining: ${formatResult(availableBalanceRemaining)}</p>
+            `;
+        }
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                convertWeeks();
+            }
+        });
+    </script>
+</body>
+</html>
