@@ -86,16 +86,16 @@
 
             function formatResult(result) {
                 let formattedResult = "";
-                if (result.days > 0) {
-                    formattedResult += `${result.days} days`;
+                if (result.days !== 0) {
+                    formattedResult += `${Math.abs(result.days)} days`;
                 }
-                if (result.hours > 0) {
+                if (result.hours !== 0) {
                     if (formattedResult) formattedResult += ", ";
-                    formattedResult += `${result.hours} hours`;
+                    formattedResult += `${Math.abs(result.hours)} hours`;
                 }
-                if (result.minutes > 0) {
+                if (result.minutes !== 0) {
                     if (formattedResult) formattedResult += ", ";
-                    formattedResult += `${result.minutes} minutes`;
+                    formattedResult += `${Math.abs(result.minutes)} minutes`;
                 }
                 return formattedResult;
             }
@@ -112,7 +112,7 @@
                 <h2>Your balance summary</h2>
                 <p>Used time off: ${formatResult(usedTimeOff)}</p>
                 <p>Used Sick leaves: ${formatResult(usedSickLeaves)}</p>
-                <p>Available balance remaining: ${formatResult(availableBalanceRemaining)}</p>
+                <p>Available balance remaining: ${availableBalanceRemainingWeeks < 0 ? '-' : ''}${formatResult(availableBalanceRemaining)}</p>
             `;
         }
 
